@@ -1,0 +1,102 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// RESTAURANTE
+model Restaurant {
+  id             String         @id @default(uuid()) //id único
+  name           String
+  slug           String //url da aplicação para acessar o restaurante 
+  description    String
+  avatarImageUrl String //avatar do restaurante de uma url
+  coverImageUrl  String //banner restaurante
+  menuCategories MenuCategory[] //Restaurant terá uma lista de MenuCategory, referencia interna do prisma
+  product        Product[] //lista de produtos desse meu restaurante, ele é o gatilho da refernecia la da tabela de produtos
+  orders         Order[] //um restaaurante pode ter vários pedidos 
+
+  createdAt DateTime @default(now()) //tempo atual, momento em que criei o produto
+  updatedAt DateTime @updatedAt //o prisma atualiza esse campo sempre que atualizar o registro de restaurant
+}
+
+// CATEGORIA
+model MenuCategory {
+  id           String     @id @default(uuid()) //id único
+  name         String
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id]) //este campo nao sera salvo no banco, ele serve internamente 
+  //para que o prisma saiba  que  a tabela MenuCategory referencia a tabela Restaurant, restaurantId de MenuCategory referencia o id de Restaurant
+  restaurantId String
+  product      Product[] //lista de produtos desse meu restaurante, ele é o gatilho da refernecia la da tabela de produtos
+  createdAt    DateTime   @default(now()) //tempo atual, momento em que criei o produto
+  updatedAt    DateTime   @updatedAt //o prisma atualiza esse campo sempre que atualizar o registro de MenuCategory
+}
+
+// PRODUTO
+model Product {
+  id             String         @id @default(uuid()) //id único
+  name           String
+  description    String
+  price          Float
+  imageUrl       String
+  ingredients    String[]
+  orderProducts  OrderProduct[]
+  restaurantId   String
+  menuCategory   MenuCategory   @relation(fields: [menuCategoryId], references: [id]) //este campo nao sera salvo no banco, ele serve internamente 
+  //para que o prisma saiba  que  a tabela Product  referencia a tabela MenuCategory, menuCategoryId de Product referencia o id da tabela MenuCategory
+  menuCategoryId String
+  restaurant     Restaurant     @relation(fields: [restaurantId], references: [id]) //1 produto pode ter apenas um restaurant
+  createdAt      DateTime       @default(now()) //tempo atual, momento em que criei o produto
+  updatedAt      DateTime       @updatedAt //o prisma atualiza esse campo sempre que atualizar o registro de Product
+}
+
+//PEDIDO
+model Order {
+  id                Int               @id @default(autoincrement()) //id auto incremental, exemplo esse é o pedido 10, talvez não fosse ideal por questão de segurança 
+  total             Float
+  status            OrderStatus //vai ser um enum (conjunto de valores)
+  consumptionMethod consumptionMethod
+  restaurant        Restaurant        @relation(fields: [restaurantId], references: [id])
+  restaurantId      String
+  orderProducts     OrderProduct[] //order terá varios produtos
+  createdAt         DateTime          @default(now()) //tempo atual, momento em que criei o produto
+  updatedAt         DateTime          @updatedAt //o prisma atualiza esse campo sempre que atualizar o registro de OrderProduct
+}
+
+//PRODUTOS DO PEDIDO
+model OrderProduct {
+  id        String  @id @default(uuid()) //id único
+  product   Product @relation(fields: [productId], references: [id]) //se referencia ao id da TABELA PRODUCT
+  productId String //a qual produto
+  order     Order   @relation(fields: [orderId], references: [id]) // 1° se referencia ao id da TABELA PRODUCT, 2° na tabela de referencia que 
+  //nesse caso e Order faço o seguinte:   orderProducts OrderProduct[] //order terá varios produtos, assim ela terá um array dos meus produtos!
+
+  orderId   Int // e pedido isso pertence
+  quantity  Int
+  price     Float //para não ter o problema do preço do produto altera 
+  createdAt DateTime @default(now()) //tempo atual, momento em que criei o produto
+  updatedAt DateTime @updatedAt //o prisma atualiza esse campo sempre que atualizar o registro de OrderProduct
+}
+
+enum OrderStatus {
+  PENDING
+  IN_PREPARATION
+  FINISHED
+}
+
+enum consumptionMethod {
+  TAKEAWAY //levar para viagem 
+  DINE_IN //Comer aqui
+}
+
+
+//rodo npx prisma format para formatar/identar o arquivo
