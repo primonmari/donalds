@@ -1,0 +1,12 @@
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+
+const ProductsPage = () => {
+    return <div className="p-5 border-red-500 rounded-xl">
+        <h1 className="text-red-500">ProductsPage</h1>
+        <Button>donalds</Button>
+        <Input placeholder="bora fechar esse projeto"/>
+    </div>
+}
+ 
+export default ProductsPage;

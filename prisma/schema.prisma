@@ -33,7 +33,8 @@ model Restaurant {
 model MenuCategory {
   id           String     @id @default(uuid()) //id único
   name         String
-  restaurant   Restaurant @relation(fields: [restaurantId], references: [id]) //este campo nao sera salvo no banco, ele serve internamente 
+  //onDelete faz com que se deletar o restaurante também deleto esse registro daqui de menu category
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade) //este campo nao sera salvo no banco, ele serve internamente 
   //para que o prisma saiba  que  a tabela MenuCategory referencia a tabela Restaurant, restaurantId de MenuCategory referencia o id de Restaurant
   restaurantId String
   product      Product[] //lista de produtos desse meu restaurante, ele é o gatilho da refernecia la da tabela de produtos
@@ -50,11 +51,11 @@ model Product {
   imageUrl       String
   ingredients    String[]
   orderProducts  OrderProduct[]
+  restaurant     Restaurant     @relation(fields: [restaurantId], references: [id], onDelete: Cascade) //1 produto pode ter apenas um restaurant
   restaurantId   String
-  menuCategory   MenuCategory   @relation(fields: [menuCategoryId], references: [id]) //este campo nao sera salvo no banco, ele serve internamente 
+  menuCategory   MenuCategory   @relation(fields: [menuCategoryId], references: [id], onDelete: Cascade) //este campo nao sera salvo no banco, ele serve internamente 
   //para que o prisma saiba  que  a tabela Product  referencia a tabela MenuCategory, menuCategoryId de Product referencia o id da tabela MenuCategory
   menuCategoryId String
-  restaurant     Restaurant     @relation(fields: [restaurantId], references: [id]) //1 produto pode ter apenas um restaurant
   createdAt      DateTime       @default(now()) //tempo atual, momento em que criei o produto
   updatedAt      DateTime       @updatedAt //o prisma atualiza esse campo sempre que atualizar o registro de Product
 }
@@ -65,7 +66,7 @@ model Order {
   total             Float
   status            OrderStatus //vai ser um enum (conjunto de valores)
   consumptionMethod consumptionMethod
-  restaurant        Restaurant        @relation(fields: [restaurantId], references: [id])
+  restaurant        Restaurant        @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
   restaurantId      String
   orderProducts     OrderProduct[] //order terá varios produtos
   createdAt         DateTime          @default(now()) //tempo atual, momento em que criei o produto
@@ -75,14 +76,13 @@ model Order {
 //PRODUTOS DO PEDIDO
 model OrderProduct {
   id        String  @id @default(uuid()) //id único
-  product   Product @relation(fields: [productId], references: [id]) //se referencia ao id da TABELA PRODUCT
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade) //se referencia ao id da TABELA PRODUCT
   productId String //a qual produto
-  order     Order   @relation(fields: [orderId], references: [id]) // 1° se referencia ao id da TABELA PRODUCT, 2° na tabela de referencia que 
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade) // 1° se referencia ao id da TABELA PRODUCT, 2° na tabela de referencia que 
   //nesse caso e Order faço o seguinte:   orderProducts OrderProduct[] //order terá varios produtos, assim ela terá um array dos meus produtos!
-
   orderId   Int // e pedido isso pertence
   quantity  Int
-  price     Float //para não ter o problema do preço do produto altera 
+  price     Float //para não ter o problema do preço do produto alterar
   createdAt DateTime @default(now()) //tempo atual, momento em que criei o produto
   updatedAt DateTime @updatedAt //o prisma atualiza esse campo sempre que atualizar o registro de OrderProduct
 }
