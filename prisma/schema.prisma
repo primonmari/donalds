@@ -17,7 +17,7 @@ datasource db {
 model Restaurant {
   id             String         @id @default(uuid()) //id único
   name           String
-  slug           String //url da aplicação para acessar o restaurante 
+  slug           String         @unique //url da aplicação para acessar o restaurante 
   description    String
   avatarImageUrl String //avatar do restaurante de uma url
   coverImageUrl  String //banner restaurante
@@ -65,7 +65,7 @@ model Order {
   id                Int               @id @default(autoincrement()) //id auto incremental, exemplo esse é o pedido 10, talvez não fosse ideal por questão de segurança 
   total             Float
   status            OrderStatus //vai ser um enum (conjunto de valores)
-  consumptionMethod consumptionMethod
+  ConsumptionMethod ConsumptionMethod
   restaurant        Restaurant        @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
   restaurantId      String
   orderProducts     OrderProduct[] //order terá varios produtos
@@ -75,10 +75,10 @@ model Order {
 
 //PRODUTOS DO PEDIDO
 model OrderProduct {
-  id        String  @id @default(uuid()) //id único
-  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade) //se referencia ao id da TABELA PRODUCT
+  id        String   @id @default(uuid()) //id único
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade) //se referencia ao id da TABELA PRODUCT
   productId String //a qual produto
-  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade) // 1° se referencia ao id da TABELA PRODUCT, 2° na tabela de referencia que 
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade) // 1° se referencia ao id da TABELA ORDER, 2° na tabela de referencia que 
   //nesse caso e Order faço o seguinte:   orderProducts OrderProduct[] //order terá varios produtos, assim ela terá um array dos meus produtos!
   orderId   Int // e pedido isso pertence
   quantity  Int
@@ -93,10 +93,9 @@ enum OrderStatus {
   FINISHED
 }
 
-enum consumptionMethod {
-  TAKEAWAY //levar para viagem 
-  DINE_IN //Comer aqui
+enum ConsumptionMethod {
+  TAKEAWAY
+  DINE_IN
 }
-
 
 //rodo npx prisma format para formatar/identar o arquivo
