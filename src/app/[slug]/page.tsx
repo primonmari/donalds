@@ -8,7 +8,6 @@ import { db } from "@/lib/prisma";
 
 import ConsumptionMethodOption from "./components/consumption-method-option";
 
-
 //parametro como prop , e ela vai definir quais props vou receber
 interface RestaurantPageProps {
   params: Promise<{ slug: string }>;
@@ -17,7 +16,16 @@ interface RestaurantPageProps {
 //para acessar a slug no componente recebo params
 const RestaurantPage = async ({ params }: RestaurantPageProps) => {
   const { slug } = await params;
-  const restaurant = await db.restaurant.findUnique({ where: { slug } });
+  const restaurant = await db.restaurant.findUnique({
+    where: { slug },
+    include: {
+      menuCategories: {
+        include: {product: true}
+      },
+    },
+  });
+  // console.log(restaurant?.menuCategories)
+
   if (!restaurant) {
     return notFound();
   }
