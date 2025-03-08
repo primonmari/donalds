@@ -1,5 +1,5 @@
 
-import { ConsumptionMethod} from "@prisma/client";
+import { ConsumptionMethod } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -26,7 +26,7 @@ const ConsumptionMethodOption = ({ slug, imageUrl, imageAlt, buttonText, option,
                         className="object-contain"
                     />
                 </div>
-                <Button variant="secondary" className="roudend-full" asChild> {/* não abre o link em outraa guia */}
+                <Button variant="secondary" className="roudend-full" asChild>
                     <Link href={`/${slug}/menu?ConsumptionMethod=${option}`}>
                         {buttonText}
                     </Link>
