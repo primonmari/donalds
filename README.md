@@ -21,7 +21,7 @@ Donalds é um aplicativo de pedidos de lanche inspirado em terminais de autoaten
 
 ### 1️⃣ Executando o Servidor de Desenvolvimento:
 
-Primeiro, execute o servidor de desenvolvimento:
+Executando o servidor de desenvolvimento:
 
 ```bash
 npm run dev
