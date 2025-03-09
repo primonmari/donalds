@@ -1,4 +1,4 @@
-"use server";
+"use server";  //um arquivo terá server action
 
 import { ConsumptionMethod } from "@prisma/client";
 import { revalidatePath } from "next/cache";
@@ -45,7 +45,6 @@ export const createOrder = async (input: CreateOrderInput) => {
     await db.order.create({
         data: {
             status: 'PENDING',
-            /* consumptionMethod: input.consumptionMethod, */            
             customerName: input.customerName,
             customerCpf: removeCpfPunctuation(input.customerCpf),
             orderProducts: {
@@ -53,8 +52,11 @@ export const createOrder = async (input: CreateOrderInput) => {
                     data: productsWithPricesAndQuantities,
                 },
             },
-            total: productsWithPricesAndQuantities.reduce((acc, product) => acc + product.price * product.quantity, 0),
-            consumptionMethod: input.consumptionMethod,
+            total: productsWithPricesAndQuantities.reduce(
+                (acc, product) => acc + product.price * product.quantity, 
+                0,
+            ),
+            ConsumptionMethod: input.consumptionMethod,
             restaurantId: restaurant.id,
         },
     });

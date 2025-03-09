@@ -71,6 +71,8 @@ model Order {
   orderProducts     OrderProduct[] //order terá varios produtos
   createdAt         DateTime          @default(now()) //tempo atual, momento em que criei o produto
   updatedAt         DateTime          @updatedAt //o prisma atualiza esse campo sempre que atualizar o registro de OrderProduct
+  customerName      String
+  customerCpf       String
 }
 
 //PRODUTOS DO PEDIDO
