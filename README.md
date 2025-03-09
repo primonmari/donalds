@@ -1,7 +1,7 @@
 
 # 🍔 Donalds - Aplicativo de Pedidos de Lanche
 
-Donalds é um aplicativo de pedidos de lanche inspirado em terminais de autoatendimento de redes como o McDonald's. O usuário pode escolher se deseja retirar o pedido no local ou consumir no estabelecimento, adicionar itens ao carrinho e finalizar o pedido de forma simples e intuitiva.
+Donalds é um aplicativo de pedidos de lanche inspirado em terminais de autoatendimento de redes McDonald's. O usuário pode escolher se deseja retirar o pedido no local ou consumir no estabelecimento, adicionar itens ao carrinho e finalizar o pedido de forma simples e intuitiva.
 
 ---
 
